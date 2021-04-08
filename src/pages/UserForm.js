@@ -3,10 +3,10 @@ import {
 	Grid,
 	TextField,
 } from "@material-ui/core";
+import axios from "axios";
 import { useForm, Form } from "../components/userForm";
 
 const initialFValues = {
-	
 	name: "",
 	email: "",
 	password:""
@@ -15,24 +15,23 @@ const initialFValues = {
 function UserForm() {
 	const { values, setValues, handleInputChange } = useForm(initialFValues);
 
- const handleSubmit = async (e) => {
-		e.preventDefault();
-		const data = await fetch("http://localhost:5000", {
-			headers: {
-				"Content-Type": "application/json",
-			},
-			method: "POST",
-			body: JSON.stringify(values),
-		});
-
-		const result = await data.json();
-		setValues({ name: "",email:"",password:""});
-		return result;
- };
-
+ const handleFormSubmit = (e) => {
+	 e.preventDefault();
+	 axios({
+			method: "post",
+			url: "http://localhost:5000",
+			data: values
+		})
+		.then(res => {
+			setValues({ name: "", email: "", password: "" });
+		})
+		.catch(err => {
+			console.log(err);
+		})
+ }
 
 	return (
-		<Form handleSubmit={handleSubmit}>
+		<Form handleSubmit={handleFormSubmit}>
 			<Grid>
 				<Grid item xs={6}>
 					<TextField
